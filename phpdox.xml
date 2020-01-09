@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<phpdox xmlns="http://xml.phpdox.net/config">
+    <project name="Example" source="${basedir}/lib/Nora" workdir="${basedir}/var/build/xml">
+    <collector backend="parser" />
+    <generator output="${basedir}/var/build">
+        <build engine="html" output="html"/>
+        <enrich base="${basedir}/var/build/logs">
+            <source type="build" />
+            <source type="git">
+                <history enabled="true" limit="15" />
+            </source>
+            <source type="phpcs" />
+        </enrich>
+    </generator>
+  </project>
+</phpdox>

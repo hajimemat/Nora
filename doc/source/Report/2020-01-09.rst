@@ -1,0 +1,14 @@
+2020-01-09のレポート
+=======================
+
+
+.. uml:
+
+   a -> b
+
+.. code-block:
+
+   phpcs src tests
+   phpmd src text ./phpmd.xml
+   php-cs-fixer fix --config-file=./.php_cs
+   phpcbf src

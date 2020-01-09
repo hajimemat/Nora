@@ -1,0 +1,24 @@
+skinparam {
+  RoundCorner 5
+  Shadowing false
+  ArrowColor Black
+  ArrowFontSize 16
+  Padding 8
+  WrapWidth 1024
+  note {
+    BackgroundColor OldLace
+    BorderColor BurlyWood
+    FontSize 16
+  }
+  sequence {
+    LifeLineBorderColor Black
+    LifeLineBackgroundColor White
+    MessageAlignment center
+    Participant {
+      BorderColor Black
+      BorderThickness 0.5
+      BackgroundColor White
+      FontSize 18
+    }
+  }
+}

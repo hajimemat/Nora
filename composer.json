@@ -1,0 +1,23 @@
+{
+    "name": "avap/nora",
+    "description": "Nora PHP Library",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hajime MATSUMOTO",
+            "email": "hajime.matsumoto@avap.co.jp"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Nora\\": "lib/Nora"
+        }
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.5",
+        "phpmd/phpmd": "^2.8",
+        "phpunit/phpunit": "^8.5"
+    }
+}

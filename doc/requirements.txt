@@ -1,0 +1,9 @@
+sphinxcontrib-httpdomain
+sphinxcontrib.plantuml
+sphinxcontrib.blockdiag
+sphinxcontrib.seqdiag
+sphinxcontrib.nwdiag
+sphinxcontrib.actdiag
+sphinxcontrib.httpdomain
+sphinxcontrib.phpdomain
+sphinx_rtd_theme
