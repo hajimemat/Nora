@@ -19,5 +19,15 @@
         "squizlabs/php_codesniffer": "^3.5",
         "phpmd/phpmd": "^2.8",
         "phpunit/phpunit": "^8.5"
+    },
+    "scripts": {
+        "coverage": ["php -dzend_extension=xdebug.so ./tools/phpunit"],
+        "phploc": ["./tools/phploc --count-tests --log-xml ./build/logs/phploc.xml lib/Nora tests"],
+        "phpmd": ["./tools/phpmd lib xml ./phpmd.xml --reportfile ./build/logs/pmd.xml"],
+        "checkstyle": ["./tools/phpcs --report=checkstyle --report-file=./build/logs/checkstyle.xml lib/Nora"],
+        "phpcs": ["./tools/phpcs --report=xml --report-file=./build/logs/phpcs.xml lib/Nora"],
+        "report": ["@coverage", "@phploc", "@phpmd", "@checkstyle", "@phpcs", "./tools/phpdox"],
+        "cleanup": ["rm -rf build/coverage", "rm -rf build/logs", "rm -rf build/docs"],
+        "test": ["./tools/phpunit"]
     }
 }

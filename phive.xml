@@ -4,4 +4,6 @@
   <phar name="phpdox" version="^0.12.0" installed="0.12.0" location="./tools/phpdox" copy="false"/>
   <phar name="phpunit" version="^8.5.0" installed="8.5.0" location="./tools/phpunit" copy="false"/>
   <phar name="phpcs" version="^3.5.3" installed="3.5.3" location="./tools/phpcs" copy="false"/>
+  <phar name="phploc" version="^5.0.0" installed="5.0.0" location="./tools/phploc" copy="false"/>
+  <phar name="phpmd" version="^2.7.0" installed="2.7.0" location="./tools/phpmd" copy="false"/>
 </phive>

@@ -4,7 +4,7 @@
          bootstrap="tests/bootstrap.php">
     <testsuites>
         <testsuite name="all">
-            <directory>tests</directory>
+            <directory suffix="Test.php">tests</directory>
         </testsuite>
     </testsuites>
     <php>
@@ -15,4 +15,10 @@
             <directory suffix=".php">lib/Nora</directory>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-html" showUncoveredFiles="true" target="build/logs/coverage/html" lowUpperBound="35" highLowerBound="70"/>
+        <log type="coverage-clover" target="build/logs/clover.xml"/>
+        <log type="coverage-xml" target="build/logs/coverage/xml"/>
+        <log type="junit" target="build/logs/junit.xml"/>
+    </logging>
 </phpunit>
