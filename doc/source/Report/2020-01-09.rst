@@ -2,13 +2,33 @@
 =======================
 
 
-.. uml:
+.. uml::
 
-   a -> b
+   participant phpunit
+   participant phpmd
+   participant phpcs
+   participant phploc
 
-.. code-block:
+   a -> b : doc
+
+.. code-block::
 
    phpcs src tests
    phpmd src text ./phpmd.xml
    php-cs-fixer fix --config-file=./.php_cs
    phpcbf src
+
+VIMからPHPUnitを使いやすくする。
+
+phpdoxでドキュメントを吐き出せるようにした。
+
+
+ドキュメント作成はSphinxが一番だと思った。
+
+調べたもの:
+   - R言語
+
+できたこと:
+   - phpunit, tmux, vim 連携
+   - phpdox
+   - project単位でのvimrc

@@ -10,6 +10,7 @@ Welcome to Nora's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   ./Library/Index.rst
    ./Report/Index.rst
    ./Tools/Index.rst
 

@@ -62,7 +62,7 @@ class Dotenv
         $this->updateEnv(true);
     }
 
-    public function updateEnv($override)
+    private function updateEnv(bool $override)
     {
         $file = $this->loadEnvFile();
         foreach ($file as $key => $value) {
