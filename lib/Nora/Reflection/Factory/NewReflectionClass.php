@@ -1,8 +1,14 @@
 <?php
+/**
+ * this file is part of Nora
+ *
+ * @package Reflection
+ */
 declare(strict_types=1);
 
-namespace Nora\Reflection;
+namespace Nora\Reflection\Factory;
 
+use Nora\Reflection\Exception\ClassNotFound;
 use ReflectionClass;
 
 final class NewReflectionClass
@@ -10,8 +16,9 @@ final class NewReflectionClass
     public function __invoke(string $class) : ReflectionClass
     {
         if (!class_exists($class)) {
-            throw new NotFound($class);
+            throw new ClassNotFound($class);
         }
+
         return new ReflectionClass($class);
     }
 }

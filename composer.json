@@ -9,7 +9,9 @@
             "email": "hajime.matsumoto@avap.co.jp"
         }
     ],
-    "require": {},
+    "require": {
+        "doctrine/common": "^2.11"
+    },
     "autoload": {
         "psr-4": {
             "Nora\\": "lib/Nora"

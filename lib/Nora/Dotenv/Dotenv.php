@@ -11,14 +11,50 @@ class Dotenv
      */
     private $path;
 
-    public function __construct(string $path)
+    /**
+     * @var string
+     */
+    private $name;
+
+
+    public function __construct(string $path, string $name = ".env")
     {
         $this->path = $path;
+        $this->name = $name;
     }
 
+    /**
+     * Load .env file
+     *
+     * loading .env file and putenv but not override
+     * alrady defined key
+     *
+     * @throw EnvFileNotFound
+     */
+    public function load()
+    {
+        $this->updateEnv(false);
+    }
+
+    /**
+     * Load .env file
+     *
+     * loading .env file and putenv and override
+     * even alrady defined key
+     *
+     * @throw EnvFileNotFound
+     */
+    public function override()
+    {
+        $this->updateEnv(true);
+    }
+
+    /**
+     * @throw EnvFileNotFound
+     */
     private function loadEnvFile()
     {
-        $file = $this->path."/.env";
+        $file = $this->path."/".$this->name;
         if (!file_exists($file)) {
             throw new EnvFileNotFound("Env {$file} Not Found");
         }
@@ -52,16 +88,10 @@ class Dotenv
         return $env;
     }
 
-    public function load()
-    {
-        $this->updateEnv(false);
-    }
 
-    public function override()
-    {
-        $this->updateEnv(true);
-    }
-
+    /**
+     * @throw EnvFileNotFound
+     */
     private function updateEnv(bool $override)
     {
         $file = $this->loadEnvFile();
