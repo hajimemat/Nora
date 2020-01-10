@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Nora\DI\Dependency;
 
 use Nora\DI\Bind;
+use Nora\DI\Constant\Scope;
 use Nora\DI\Container;
 use Nora\DI\ValueObject\NewInstance;
 use ReflectionMethod;
@@ -27,6 +28,7 @@ final class Dependency implements DependencyInterface
      * @var bool
      */
     private $isSingleton = false;
+    private $instance;
 
     public function __construct(
         NewInstance $newInstance,
@@ -63,5 +65,12 @@ final class Dependency implements DependencyInterface
             $this->instance->{$this->postConstruct}();
         }
         return $this->instance;
+    }
+
+    public function setScope($scope)
+    {
+        if ($scope === Scope::SINGLETON) {
+            $this->isSingleton = true;
+        }
     }
 }

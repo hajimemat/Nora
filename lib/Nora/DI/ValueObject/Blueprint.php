@@ -10,6 +10,7 @@ namespace Nora\DI\ValueObject;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use InvalidArgumentException;
+use Nora\DI\Annotation\InjectInterface;
 use Nora\DI\Annotation\Named;
 use ReflectionClass;
 use ReflectionMethod;
@@ -29,17 +30,34 @@ final class Blueprint
 
     public function getNewInstance(ReflectionClass $class) : NewInstance
     {
+        $setterMethods = [];
         foreach ($class->getMethods() as $method) {
             if ($method->name === '__construct') {
                 continue;
             }
+            $inject = $this->reader->getMethodAnnotation($method, InjectInterface::class);
+            if (!$inject instanceof InjectInterface) {
+                continue;
+            }
+
+            $named = $this->reader->getMethodAnnotation($method, Named::class);
+            $nameValue = '';
+            if ($named instanceof Named) {
+                $nameValue = $named->value;
+            }
+
+            $setterMethod = new SetterMethod($method, new Name($nameValue));
+            if ($inject->isOptional()) {
+                $setterMethods[] = $setterMethod->setOptional();
+            }
+            $setterMethods[] = $setterMethod;
         }
 
         $name = $this->getConstructorName($class);
 
-        $setterMethods = new SetterMethods([]);
+        
 
-        return new NewInstance($class, $setterMethods, $name);
+        return new NewInstance($class, new SetterMethods($setterMethods), $name);
     }
 
     public function getPostConstruct(ReflectionClass $class) : ?ReflectionMethod

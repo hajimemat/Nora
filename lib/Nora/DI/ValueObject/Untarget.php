@@ -10,6 +10,7 @@ namespace Nora\DI\ValueObject;
 
 use InvalidArgumentException;
 use Nora\DI\Bind;
+use Nora\DI\Constant\Scope;
 use Nora\DI\Container;
 use Nora\DI\Dependency\DependencyFactory;
 use Nora\Reflection\Factory\NewReflectionClass;
@@ -22,6 +23,11 @@ final class Untarget
      */
     private $class;
 
+    /**
+     * @var string
+     */
+    private $scope = Scope::PROTOTYPE;
+
     public function __construct(string $class)
     {
         $this->class = (new NewReflectionClass)($class);
@@ -30,6 +36,7 @@ final class Untarget
     public function __invoke(Container $container, Bind $bind)
     {
         $bound = (new DependencyFactory)->newDependency($this->class);
+        $bound->setScope($this->scope);
         $bind->setBound($bound);
         $container->add($bind);
         $constructor = $this->class->getConstructor();
@@ -42,5 +49,10 @@ final class Untarget
                 }
             }
         }
+    }
+
+    public function setScope(string $scope)
+    {
+        $this->scope = $scope;
     }
 }

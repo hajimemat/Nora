@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Nora\DI\Dependency;
 
 use Nora\DI\Bind;
+use Nora\DI\Constant\Scope;
 use Nora\DI\Container;
 use Nora\DI\ValueObject\NewInstance;
 use ReflectionMethod;
@@ -62,5 +63,12 @@ final class DependencyProvider implements DependencyInterface
     public function register(array &$container, Bind $bind)
     {
         $container[(string) $bind] = $bind->getBound();
+    }
+
+    public function setScope($scope)
+    {
+        if ($scope === Scope::SINGLETON) {
+            $this->isSingleton = true;
+        }
     }
 }

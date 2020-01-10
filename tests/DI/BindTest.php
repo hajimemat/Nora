@@ -2,7 +2,9 @@
 namespace Nora\DI;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Nora\DI\Annotation\Inject;
 use Nora\DI\Annotation\Named;
+use Nora\DI\Constant\Scope;
 use Nora\DI\ValueObject\Name;
 use Nora\Dotenv\Exception\EnvFileNotFound;
 use PHPUnit\Framework\TestCase;
@@ -114,7 +116,6 @@ class FugaProvider implements ProviderInterface
     }
 }
 
-
 class BindTest extends TestCase
 {
     private $name;
@@ -220,5 +221,73 @@ class BindTest extends TestCase
      */
     public function セッターインジェクション()
     {
+        $container = new Container();
+        (new Bind($container, HogeComponent::class));
+        (new Bind($container, SetterInjectionComponent::class));
+
+        $s = $container->getInstance(SetterInjectionComponent::class, '');
+        $this->assertInstanceOf(
+            HogeComponent::class,
+            $s->hoge
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function シングルトン_アンターゲット()
+    {
+        $container = new Container();
+        (new Bind($container, HogeComponent::class))->in(Scope::SINGLETON);
+        $hoge1 = $container->getInstance(HogeComponent::class, '');
+        $hoge2 = $container->getInstance(HogeComponent::class, '');
+
+        $this->assertSame($hoge1, $hoge2);
+    }
+
+    /**
+     * @test
+     */
+    public function シングルトン_リンク()
+    {
+        $container = new Container();
+        (new Bind($container, FugaInterface::class))
+            ->to(Fuga::class)
+            ->in(Scope::SINGLETON);
+        $obj1 = $container->getInstance(FugaInterface::class, '');
+        $obj2 = $container->getInstance(FugaInterface::class, '');
+
+        $this->assertSame($obj1, $obj2);
+    }
+    /**
+     * @test
+     */
+    public function シングルトン_プロバイダー()
+    {
+        $container = new Container();
+        (new Bind($container, FugaInterface::class))
+            ->toProvider(FugaProvider::class)
+            ->in(Scope::SINGLETON);
+        (new Bind($container, ''))->annotatedWith('fuga_config')->toInstance([
+            "aaa" => '1',
+            "bbb" => '2'
+        ]);
+        $obj1 = $container->getInstance(FugaInterface::class, '');
+        $obj2 = $container->getInstance(FugaInterface::class, '');
+
+        $this->assertSame($obj1, $obj2);
+    }
+}
+
+class SetterInjectionComponent
+{
+    public $hoge;
+
+    /**
+     * @Inject
+     */
+    public function setHoge(HogeComponent $hoge)
+    {
+        $this->hoge = $hoge;
     }
 }

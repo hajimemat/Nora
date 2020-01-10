@@ -9,8 +9,10 @@ declare(strict_types=1);
 namespace Nora\DI;
 
 use InvalidArgumentException;
+use Nora\DI\Dependency\Dependency;
 use Nora\DI\Dependency\DependencyFactory;
 use Nora\DI\Dependency\DependencyInterface;
+use Nora\DI\Dependency\DependencyProvider;
 use Nora\DI\Dependency\Instance;
 use Nora\DI\ValueObject\Name;
 use Nora\DI\ValueObject\Untarget;
@@ -38,6 +40,8 @@ class Bind
     /**
      */
     private $untarget;
+
+    private $bound;
 
     public function __construct(Container $container, string $interface)
     {
@@ -135,6 +139,17 @@ class Bind
         $refClass = $this->validate->toProvider($provider);
         $this->bound = (new DependencyFactory)->newProvider($refClass, $context);
         $this->container->add($this);
+        return $this;
+    }
+
+    public function in(string $scope) : self
+    {
+        if ($this->bound instanceof Dependency || $this->bound instanceof DependencyProvider) {
+            $this->bound->setScope($scope);
+        }
+        if ($this->untarget) {
+            $this->untarget->setScope($scope);
+        }
         return $this;
     }
 }
