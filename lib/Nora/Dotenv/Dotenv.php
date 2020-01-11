@@ -96,8 +96,10 @@ class Dotenv
     {
         $file = $this->loadEnvFile();
         foreach ($file as $key => $value) {
-            if (getenv($key) === false || $override) {
+            if ($override || getenv($key) === false) {
                 putenv("{$key}={$value}");
+                $_ENV[$key] = $value;
+                $_SERVER[$key] = $value;
             }
         }
         return true;

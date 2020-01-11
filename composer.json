@@ -14,7 +14,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Nora\\": "lib/Nora"
+            "Nora\\": "lib/Nora",
+            "NoraFake\\": "tests/lib/NoraFake",
+            "NoraApp\\": "src"
         }
     },
     "require-dev": {

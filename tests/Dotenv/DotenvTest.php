@@ -39,4 +39,17 @@ class DotenvTest extends TestCase
         $dotenv = (new NewDotenv)(__DIR__);
         $dotenv->load();
     }
+
+    /**
+     * @test
+     */
+    public function Envにも修正が適用されるか()
+    {
+        (new NewDotenv)(dirname(__DIR__))->override();
+
+        $this->assertEquals(
+            $_ENV['SOME_SECRET'],
+            "some secret"
+        );
+    }
 }

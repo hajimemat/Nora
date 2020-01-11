@@ -14,6 +14,8 @@ use ReflectionMethod;
 
 final class Arguments
 {
+    private $arguments = [];
+
     public function __construct(ReflectionMethod $method, Name $name)
     {
         $parameters = $method->getParameters();

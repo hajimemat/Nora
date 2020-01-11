@@ -52,4 +52,14 @@ class Container
         }
         return new Unbound("{$class}-{$name}");
     }
+
+    public function merge(self $container)
+    {
+        $this->container += $container->getContainer();
+    }
+
+    public function getContainer()
+    {
+        return $this->container;
+    }
 }

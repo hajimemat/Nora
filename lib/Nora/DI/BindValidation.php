@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace Nora\DI;
 
 use Nora\DI\Exception\InvalidProvider;
+use Nora\DI\Exception\InvalidType;
 use Nora\DI\Exception\NotFound;
 use ReflectionClass;
 

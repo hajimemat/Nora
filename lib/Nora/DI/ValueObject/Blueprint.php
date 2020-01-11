@@ -35,18 +35,27 @@ final class Blueprint
             if ($method->name === '__construct') {
                 continue;
             }
-            $inject = $this->reader->getMethodAnnotation($method, InjectInterface::class);
+            $inject = $this->reader->getMethodAnnotation(
+                $method,
+                InjectInterface::class
+            );
             if (!$inject instanceof InjectInterface) {
                 continue;
             }
 
-            $named = $this->reader->getMethodAnnotation($method, Named::class);
+            $named = $this
+                ->reader
+                ->getMethodAnnotation($method, Named::class);
             $nameValue = '';
             if ($named instanceof Named) {
                 $nameValue = $named->value;
             }
 
-            $setterMethod = new SetterMethod($method, new Name($nameValue));
+            $setterMethod = new SetterMethod(
+                $method,
+                new Name($nameValue)
+            );
+
             if ($inject->isOptional()) {
                 $setterMethods[] = $setterMethod->setOptional();
             }
@@ -54,8 +63,6 @@ final class Blueprint
         }
 
         $name = $this->getConstructorName($class);
-
-        
 
         return new NewInstance($class, new SetterMethods($setterMethods), $name);
     }
