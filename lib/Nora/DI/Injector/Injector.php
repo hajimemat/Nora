@@ -9,6 +9,8 @@ declare(strict_types=1);
 namespace Nora\DI\Injector;
 
 use Nora\DI\Bind;
+use Nora\DI\Compiler\Compiler;
+use Nora\DI\Dependency\Dependency;
 use Nora\DI\Exception\Unbound;
 use Nora\DI\Exception\Untargeted;
 use Nora\DI\Module\AbstractModule;
@@ -21,6 +23,8 @@ class Injector implements InjectorInterface
     {
         $module = $module ?? new NullModule();
         $this->container = $module->getContainer();
+        $this->classDir = sys_get_temp_dir();
+        $this->container->weaveAspects(new Compiler($this->classDir));
         (new Bind($this->container, InjectorInterface::class))
             ->toInstance($this);
     }
@@ -39,7 +43,9 @@ class Injector implements InjectorInterface
     private function bind(string $class)
     {
         (new Bind($this->container, $class));
-        // $bound = $this->container->getContainer()[$class . '-' .Name::ANY];
-        // unset($bound);
+        $bound = $this->container->getContainer()[$class . '-' .Name::ANY];
+        if ($bound instanceof Dependency) {
+            $this->container->weaveAspect(new Compiler($this->classDir), $bound)->getInstance($class, Name::ANY);
+        }
     }
 }

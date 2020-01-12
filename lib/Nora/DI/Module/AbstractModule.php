@@ -2,7 +2,11 @@
 namespace Nora\DI\Module;
 
 use Nora\DI\Bind;
+use Nora\DI\Constant\Scope;
 use Nora\DI\Container;
+use Nora\DI\Interceptor\AbstractMatcher;
+use Nora\DI\Interceptor\Matcher;
+use Nora\DI\Interceptor\Pointcut;
 
 abstract class AbstractModule
 {
@@ -40,12 +44,25 @@ abstract class AbstractModule
     public function activate()
     {
         $this->container = new Container;
+        $this->matcher = new Matcher;
         $this->configure();
     }
 
     protected function bind(string $interface = '') : Bind
     {
         return new Bind($this->getContainer(), $interface);
+    }
+
+    protected function bindInterceptor(
+        AbstractMatcher $classMatcher,
+        AbstractMatcher $methodMatcher,
+        array $interceptors
+    ) {
+        $pointcut = new Pointcut($classMatcher, $methodMatcher, $interceptors);
+        $this->container->addPointcut($pointcut);
+        foreach ($interceptors as $interceptor) {
+            (new Bind($this->container, $interceptor))->to($interceptor)->in(Scope::SINGLETON);
+        }
     }
 
     public function getContainer() : Container

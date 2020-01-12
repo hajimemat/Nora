@@ -13,6 +13,7 @@ use Nora\DI\Injector\InjectorInterface;
 use Nora\Kernel\Helper\ContextHelper;
 use Nora\Kernel\Helper\SharedKernelHelper;
 use Nora\Resource\Exception\ResourceNotFoundException;
+use Nora\Resource\ResourceObject;
 use Nora\Resource\Uri;
 
 class PageResourceAdapter

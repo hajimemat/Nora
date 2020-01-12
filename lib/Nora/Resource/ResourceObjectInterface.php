@@ -8,6 +8,6 @@ declare(strict_types=1);
 
 namespace Nora\Resource;
 
-interface ResourceObjectInterface
+interface ResourceObjectInterface extends \ArrayAccess
 {
 }

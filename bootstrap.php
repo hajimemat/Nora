@@ -14,9 +14,9 @@ return function (string $context, string $name) : int {
             ->{$match->getMethod()}
             ->uri($match->getPath())($match->getQuery());
 
-        var_dump($response);
+        // $response->transfer($kernel->respounder, $kernel->context->server);
+        $response->transfer($kernel->respounder, $kernel->context->server);
 
-        echo $match;
         return 0;
     } catch (\Exception $e) {
         $kernel->error->handle($e, $match)->transfer();

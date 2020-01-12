@@ -9,9 +9,14 @@ declare(strict_types=1);
 namespace Nora\DI\Dependency;
 
 use Nora\DI\Bind;
+use Nora\DI\Aop\Bind as AopBind;
+use Nora\DI\Compiler\CompilerInterface;
 use Nora\DI\Constant\Scope;
 use Nora\DI\Container;
+use Nora\DI\Interceptor\MethodInterceptorInterface;
+use Nora\DI\Interceptor\WeavedInterface;
 use Nora\DI\ValueObject\NewInstance;
+use ReflectionClass;
 use ReflectionMethod;
 
 final class Dependency implements DependencyInterface
@@ -72,5 +77,22 @@ final class Dependency implements DependencyInterface
         if ($scope === Scope::SINGLETON) {
             $this->isSingleton = true;
         }
+    }
+
+    public function weaveAspects(CompilerInterface $compiler, array $pointcuts)
+    {
+        $class = (string) $this->newInstance;
+        $isInterceptor = (new ReflectionClass($class))->implementsInterface(MethodInterceptorInterface::class);
+        $isWeaved = (new ReflectionClass($class))->implementsInterface(WeavedInterface::class);
+        if ($isInterceptor || $isWeaved) {
+            return;
+        }
+        $bind = new AopBind;
+        $bind->bind((string) $this->newInstance, $pointcuts);
+        if (! $bind->getBindings()) {
+            return;
+        }
+        $class = $compiler->compile((string) $this->newInstance, $bind);
+        $this->newInstance->weaveAspects($class, $bind);
     }
 }

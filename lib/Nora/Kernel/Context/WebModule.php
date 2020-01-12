@@ -15,15 +15,13 @@ use Nora\Kernel\Provid\Html\HtmlModule;
 use Nora\Kernel\Provid\ResourceModule;
 use Nora\Kernel\Provid\RouterModule;
 use Nora\Kernel\Provid\Transfer\HttpModule;
+use Nora\Resource\Renderer\JsonRenderer;
+use Nora\Resource\Renderer\RendererInterface;
 
 class WebModule extends AbstractModule
 {
     public function configure()
     {
-        $this->install(new RouterModule);
-        $this->install(new ResourceModule);
-        $this->install(new ErrorModule);
-        $this->install(new HttpModule);
-        $this->install(new HtmlModule);
+        // $this->install(new HtmlModule);
     }
 }

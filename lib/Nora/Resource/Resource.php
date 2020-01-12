@@ -10,6 +10,7 @@ namespace Nora\Resource;
 
 use Nora\Resource\Adapter\AdapterFactory;
 use Nora\Resource\Exception\InvalidRequestMethod;
+use Nora\Resource\Request\RequestFactory;
 
 class Resource implements ResourceInterface
 {
@@ -26,24 +27,33 @@ class Resource implements ResourceInterface
      */
     private $adapterFactory;
 
+    /**
+     * @var RequestFactory
+     */
+    private $requestFactory;
+
     public function __construct(
         UriFactory $uriFactory,
-        AdapterFactory $adapterFactory
+        AdapterFactory $adapterFactory,
+        RequestFactory $requestFactory
     ) {
         $this->uriFactory = $uriFactory;
         $this->adapterFactory = $adapterFactory;
+        $this->requestFactory = $requestFactory;
     }
 
     public function uri(string $uri)
     {
         $uri = ($this->uriFactory)($uri);
         $resourceObject = $this->newInstance($uri);
-        return new ResourceRequest($uri);
+        return ($this->requestFactory)($resourceObject, $this->method);
     }
 
     public function newInstance(Uri $uri) : ResourceObject
     {
-        return ($this->adapterFactory)($uri->scheme)->get($uri);
+        $ro = ($this->adapterFactory)($uri->scheme)->get($uri);
+        $ro->uri = $uri;
+        return $ro;
     }
 
     public function __get($method)

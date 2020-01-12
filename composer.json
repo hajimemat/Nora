@@ -10,7 +10,9 @@
         }
     ],
     "require": {
-        "doctrine/common": "^2.11"
+        "doctrine/common": "^2.11",
+        "nikic/php-parser": "^4.3",
+        "rize/uri-template": "^0.3.2"
     },
     "autoload": {
         "psr-4": {

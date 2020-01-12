@@ -10,6 +10,7 @@ namespace Nora\Resource\Renderer;
 
 use InvalidArgumentException;
 use Nora\DI\Annotation\Named;
+use Nora\DI\Interceptor\WeavedInterface;
 use Nora\Resource\ResourceObjectInterface;
 use ReflectionClass;
 
@@ -25,10 +26,11 @@ class HtmlRenderer implements RendererInterface
 
     public function render(ResourceObjectInterface $ro)
     {
-        extract($ro->body);
-
         // ファイルを取得する
         $file = (new ReflectionClass($ro))->getFileName();
+        if ($ro instanceof WeavedInterface) {
+            $file = (new ReflectionClass($ro))->getParentClass()->getFileName();
+        }
         $file = str_replace('.php', '.html.php', $file);
         $pos  = strpos($file, '/Resource/');
         $name = substr($file, $pos + (strlen('/Resource/')));
@@ -36,11 +38,15 @@ class HtmlRenderer implements RendererInterface
         foreach ($this->viewDirectories as $viewDir) {
             $file = $viewDir.'/'.$name;
             if (file_exists($file)) {
-                return include $file;
+                extract($vars = $ro->body);
+                ob_start();
+                include $file;
+                $contents = ob_get_contents();
+                ob_end_clean();
+                return $contents;
             }
-            var_dump($file);
         }
 
-        throw new InvalidArgumentException("Templete not found");
+        throw new InvalidArgumentException("Templete not \"{$name}\" found");
     }
 }

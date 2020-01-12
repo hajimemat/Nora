@@ -8,7 +8,10 @@ declare(strict_types=1);
 
 namespace Nora\DI\ValueObject;
 
+use Nora\DI\Aop\Bind as AopBind;
+use Nora\DI\AspectBind;
 use Nora\DI\Container;
+use Nora\DI\Exception\Unbound;
 use ReflectionClass;
 
 final class NewInstance
@@ -25,6 +28,10 @@ final class NewInstance
      * @var Arguments
      */
     private $arguments;
+    /**
+     * @var AspectsBind
+     */
+    private $bind;
 
     public function __construct(
         ReflectionClass $class,
@@ -47,13 +54,33 @@ final class NewInstance
 
     public function __invoke(Container $container)
     {
-        $instance = $this->arguments instanceof Arguments ? (new ReflectionClass($this->class))->newInstanceArgs($this->arguments->inject($container)): new $this->class;
+        try {
+            $instance =
+            $this->arguments instanceof Arguments ?
+                (new ReflectionClass($this->class))->newInstanceArgs($this->arguments->inject($container)):
+                new $this->class;
+        } catch (Unbound $e) {
+            throw new Unbound("Error for {$this->class}", 1, $e);
+        }
         return $this->postNewInstance($container, $instance);
     }
 
     public function postNewInstance(Container $container, $instance)
     {
         ($this->setterMethods)($instance, $container);
+
+        if ($this->bind instanceof AspectBind) {
+            $instance->bindings = $this->bind->inject($container);
+        }
         return $instance;
+    }
+
+    /**
+     * @param string $class
+     */
+    public function weaveAspects($class, AopBind $bind)
+    {
+        $this->class = $class;
+        $this->bind = new AspectBind($bind);
     }
 }

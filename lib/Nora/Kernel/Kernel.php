@@ -10,6 +10,7 @@ namespace Nora\Kernel;
 
 use Nora\DI\Annotation\Inject;
 use Nora\Kernel\Context\Context;
+use Nora\Kernel\Extension\Transfer\TransferInterface;
 use Nora\Kernel\Helper\ContextHelper;
 use Nora\Kernel\Helper\ErrorHandlingHelper;
 use Nora\Kernel\Helper\ResourceHelper;
@@ -21,4 +22,17 @@ class Kernel implements KernelInterface
     use RouterHelper;
     use ResourceHelper;
     use ErrorHandlingHelper;
+
+    /**
+     * @var TransferInterface
+     */
+    public $respounder;
+
+    /**
+     * @Nora\DI\Annotation\Inject
+     */
+    public function setRespounder(TransferInterface $respounder)
+    {
+        $this->respounder = $respounder;
+    }
 }

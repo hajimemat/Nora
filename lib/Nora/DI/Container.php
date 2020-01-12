@@ -8,8 +8,11 @@ declare(strict_types=1);
 
 namespace Nora\DI;
 
+use Nora\DI\Compiler\CompilerInterface;
+use Nora\DI\Dependency\Dependency;
 use Nora\DI\Exception\Unbound;
 use Nora\DI\Exception\Untargeted;
+use Nora\DI\Interceptor\Pointcut;
 use ReflectionClass;
 
 class Container
@@ -18,6 +21,8 @@ class Container
      * @var DependencyInterface[]
      */
     private $container = [];
+
+    private $pointcuts = [];
 
     public function __sleep()
     {
@@ -56,10 +61,41 @@ class Container
     public function merge(self $container)
     {
         $this->container += $container->getContainer();
+        $this->pointcuts += array_merge($this->pointcuts, $container->getPointcuts());
     }
 
     public function getContainer()
     {
         return $this->container;
+    }
+
+    public function getPointcuts()
+    {
+        return $this->pointcuts;
+    }
+
+
+    public function addPointcut(Pointcut $pointcut)
+    {
+        $this->pointcuts[] = $pointcut;
+    }
+
+    public function weaveAspects(CompilerInterface $compiler)
+    {
+        foreach ($this->container as $dependency) {
+            if (!$dependency instanceof Dependency) {
+                continue;
+            }
+            $dependency->weaveAspects($compiler, $this->pointcuts);
+        }
+    }
+
+    /**
+     * Weave aspect to single dependency
+     */
+    public function weaveAspect(CompilerInterface $compiler, Dependency $dependency) : self
+    {
+        $dependency->weaveAspects($compiler, $this->pointcuts);
+        return $this;
     }
 }
