@@ -12,10 +12,14 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\Reader;
 use Nora\Framework\AOP\Advice\MethodInterceptor;
 use Nora\Framework\AOP\Joinpoint\MethodInvocation;
+use Nora\Framework\DI\Annotation\Named;
 
 final class FakeTraceInterceptor implements MethodInterceptor
 {
-    public function __construct(array $data)
+    /**
+     * @Named("data=data")
+     */
+    public function __construct($data)
     {
         $this->data = $data;
     }

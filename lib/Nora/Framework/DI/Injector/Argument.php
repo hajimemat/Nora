@@ -11,8 +11,9 @@ namespace Nora\Framework\DI\Injector;
 use ReflectionException;
 use ReflectionParameter;
 use ReflectionType;
+use Serializable;
 
-final class Argument
+final class Argument implements Serializable
 {
     /**
      * @var string
@@ -118,7 +119,7 @@ final class Argument
         ]);
     }
 
-    public function unserialize(string $serialized)
+    public function unserialize($serialized)
     {
         list(
             $this->index,
@@ -128,6 +129,6 @@ final class Argument
             $ref
         ) = unserialize($serialized);
 
-        $this->reflection = new ReflectionParameter($ref[0], $ref[1], $ref[2]);
+        $this->reflection = new ReflectionParameter([$ref[0], $ref[1]], $ref[2]);
     }
 }

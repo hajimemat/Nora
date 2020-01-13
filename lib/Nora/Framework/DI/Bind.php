@@ -111,6 +111,9 @@ class Bind
         $injectionPoints = null,
         string $postConstruct = null
     ) : self {
+        if (is_array($name)) {
+            $name = $this->getStringName($name);
+        }
         $this->untarget = null;
         $postConstructRef = $postConstruct ? (new ReflectionClass($class))->getMethod($postConstruct) : null;
         $this->bound = (new DependencyFactory)->newToConstructor(
@@ -144,5 +147,18 @@ class Bind
             $this->untarget->setScope($scope);
         }
         return $this;
+    }
+
+    private function getStringName(array $name) : string
+    {
+        $names = array_reduce(
+            array_keys($name),
+            function (array $carry, string $key) use ($name) : array {
+                $carry[] = $key . '=' . $name[$key];
+                return $carry;
+            },
+            []
+        );
+        return implode(',', $names);
     }
 }

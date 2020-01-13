@@ -34,6 +34,7 @@ class Injector implements InjectorInterface
         try {
             $instance = $this->container->getInstance($interface, $name);
         } catch (Untargeted $e) {
+            // Fallback To Simple Binding
             $this->bind($interface);
             $instance = $this->getInstance($interface);
         }
@@ -45,7 +46,10 @@ class Injector implements InjectorInterface
         (new Bind($this->container, $class));
         $bound = $this->container->getContainer()[$class . '-' .Name::ANY];
         if ($bound instanceof Dependency) {
-            $this->container->weaveAspect(new Compiler($this->classDir), $bound)->getInstance($class, Name::ANY);
+            $this->container->weaveAspect(
+                new Compiler($this->classDir),
+                $bound
+            )->getInstance($class, Name::ANY);
         }
     }
 }

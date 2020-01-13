@@ -11,6 +11,10 @@ use ReflectionClass;
 
 class Compiler implements CompilerInterface
 {
+    public $classDir;
+    private $codeGen;
+    private $aopClassName;
+
     public function __construct(string $classDir)
     {
         if (!is_writable($classDir)) {

@@ -7,16 +7,16 @@ declare(strict_types=1);
 namespace Nora\Framework\DI;
 
 use ArrayIterator;
+use ArrayAccess;
 use IteratorAggregate;
+use ReflectionClass;
 use Nora\Framework\AOP\Compiler\CompilerInterface;
 use Nora\Framework\AOP\Pointcut\Pointcut;
 use Nora\Framework\DI\Container\ContainerInterface;
-use ArrayAccess;
 use Nora\Framework\DI\Dependency\Dependency;
 use Nora\Framework\DI\Exception\Unbound;
 use Nora\Framework\DI\Exception\Untargeted;
 use Nora\Framework\DI\ValueObject\Name;
-use ReflectionClass;
 
 class Container implements ContainerInterface, ArrayAccess, IteratorAggregate
 {
@@ -29,6 +29,17 @@ class Container implements ContainerInterface, ArrayAccess, IteratorAggregate
      * @var Pointcut[]
      */
     private $pointcuts = [];
+
+    public function __sleep()
+    {
+        return ['container', 'pointcuts'];
+    }
+
+    public function merge(self $container)
+    {
+        $this->container += $container->getContainer();
+        $this->pointcuts += array_merge($this->pointcuts, $container->getPointcuts());
+    }
 
     /**
      * Add Binding
@@ -50,6 +61,11 @@ class Container implements ContainerInterface, ArrayAccess, IteratorAggregate
     public function getPointcuts() : array
     {
         return $this->pointcuts;
+    }
+
+    public function getContainer() : array
+    {
+        return $this->container;
     }
 
     public function getInstance(string $interface, string $name = Name::ANY)
@@ -96,6 +112,11 @@ class Container implements ContainerInterface, ArrayAccess, IteratorAggregate
         throw new InvalidMethodCall(__CLASS__ . " not supported unset");
     }
 
+    public function getIterator()
+    {
+        return new ArrayIterator($this->container);
+    }
+
     public function __invoke($interface, $name = Name::ANY)
     {
         return $this->getInstance($interface, $name);
@@ -111,8 +132,9 @@ class Container implements ContainerInterface, ArrayAccess, IteratorAggregate
         }
     }
 
-    public function getIterator()
+    public function weaveAspect(CompilerInterface $compiler, Dependency $dependency) : self
     {
-        return new ArrayIterator($this->container);
+        $dependency->weaveAspects($compiler, $this->pointcuts);
+        return $this;
     }
 }
