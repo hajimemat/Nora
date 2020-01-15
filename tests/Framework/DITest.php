@@ -1,6 +1,7 @@
 <?php
 namespace Nora\Framework\DI;
 
+use NoraFake\FakeCollection;
 use NoraFake\FakeComponent;
 use NoraFake\FakeComponent2;
 use NoraFake\FakeConfigurator;
@@ -23,6 +24,7 @@ use Nora\Framework\AOP\Pointcut\Pointcut;
 use Nora\Framework\DI\Configuration\AbstractConfigurator;
 use Nora\Framework\DI\Container\ContainerInterface;
 use Nora\Framework\DI\Dependency\Dependency;
+use Nora\Framework\DI\Exception\Untargeted;
 use Nora\Framework\DI\Injector\InjectionPoints;
 use Nora\Framework\DI\ValueObject\Scope;
 use PHPUnit\Framework\TestCase;
@@ -281,4 +283,61 @@ class ContainerTest extends TestCase
         $comp = $injector->getInstance(FakeTraceClient::class);
         $this->assertEquals('(trace) aaa kurari bbb', $comp->intercepted());
     }
+
+    /**
+     * @test
+     */
+    public function 依存性の上書き()
+    {
+        // 作り直す
+        $container = new Container();
+        (new Bind($container, FakeMessageInterface::class))
+            ->toInstance(new FakeMessage());
+
+        $this->assertEquals(
+            'hello',
+            $container->getInstance(FakeMessageInterface::class)->say()
+        );
+
+        (new Bind($container, FakeMessageInterface::class))
+            ->toInstance(['aaa']);
+        $this->assertEquals(
+            ['aaa'],
+            $container->getInstance(FakeMessageInterface::class)
+        );
+    }
+
+
+    // /**
+    //  * @test
+    //  */
+    // public function 束縛タイプいろいろ()
+    // {
+    //     $comp2 = new FakeComponent2();
+    //     $comp2->name = "Fake on dem";
+    //     $container = new Container();
+    //     (new Bind($container, FakeComponent::class));
+    //     (new Bind($container, FakeMessage::class));
+    //     (new Bind($container, FakeComponent::class))->to(FakeComponent::class);
+    //     (new Bind($container, FakeComponent2::class))->toInstance($comp2);
+    //     (new Bind($container, FakeCollection::class))->toConstructor(
+    //         FakeCollection::class,
+    //         'msg=msg',
+    //         (new InjectionPoints)->addMethod('setMessage'),
+    //         'initialize'
+    //     );
+    //
+    //     $autoload = function ($class) use ($container) {
+    //         try {
+    //             $comp = $container->getInstance($class);
+    //         } catch (Untargeted $e) {
+    //             (new Bind($container, $class));
+    //             $comp = $container->getInstance($class);
+    //         }
+    //         return $comp;
+    //     };
+    //
+    //     $comp = $autoload(FakeLang::class);
+    //     var_dump($comp);
+    // }
 }

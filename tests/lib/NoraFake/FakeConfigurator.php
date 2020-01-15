@@ -20,4 +20,22 @@ class FakeConfigurator extends AbstractConfigurator
         );
         $this->bind(FakeTraceClient::class);
     }
+
+    /**
+     * ?user_id=xxx&user_secret=bbb
+     */
+    public function onGet(InputData $data)
+    {
+        $data; // $_COOKIE['session_key'] がはいる
+    }
+}
+
+class InputData
+{
+    private $user_id;
+    private $user_secret;
+
+    public function __set($name, $value)
+    {
+    }
 }

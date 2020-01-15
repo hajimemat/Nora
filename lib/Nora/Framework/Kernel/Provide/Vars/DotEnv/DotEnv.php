@@ -1,10 +1,10 @@
 <?php
-namespace Nora\Dotenv;
+namespace Nora\Framework\Kernel\Provide\Vars\DotEnv;
 
 use Nora\Dotenv\Exception\EnvFileNotFound;
 use ReflectionClass;
 
-class Dotenv
+class DotEnv
 {
     /**
      * @var string

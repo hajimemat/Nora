@@ -19,8 +19,20 @@ use Nora\Kernel\KernelInterface;
 
 final class KernelInjector implements InjectorInterface
 {
+    /**
+     * @var string
+     */
     private $module;
+
+    /**
+     * @var string
+     */
     private $context;
+
+    /**
+     * @var InjectorInterface
+     */
+    private $injector;
 
     public function __construct(string $name = null, string $context)
     {

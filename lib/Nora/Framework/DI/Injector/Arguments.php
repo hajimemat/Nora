@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace Nora\Framework\DI\Injector;
 
+use Doctrine\Common\Annotations\AnnotationReader;
+use Nora\Framework\DI\Bind;
 use Nora\Framework\DI\Container;
 use Nora\Framework\DI\Exception\Unbound;
 use Nora\Framework\DI\Exception\Untargeted;
@@ -37,7 +39,8 @@ final class Arguments
 
     public function getParameter(Container $container, Argument $argument)
     {
-        // $this->bindInjectionPoint($container, $argument);
+        $this->bindInjectionPoint($container, $argument);
+
         try {
             return $container->getDependency((string) $argument);
         } catch (Unbound $e) {
@@ -51,5 +54,15 @@ final class Arguments
             }
             throw new Untargeted($argument->getMeta(), 0, $e);
         }
+    }
+
+    
+    private function bindInjectionPoint(Container $container, Argument $argument)
+    {
+        $isSelf = (string) $argument === InjectionPointInterface::class . '-' . Name::ANY;
+        if ($isSelf) {
+            return;
+        }
+        (new Bind($container, InjectionPointInterface::class))->toInstance(new InjectionPoint($argument->getReflection(), new AnnotationReader));
     }
 }

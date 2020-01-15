@@ -131,4 +131,9 @@ final class Argument implements Serializable
 
         $this->reflection = new ReflectionParameter([$ref[0], $ref[1]], $ref[2]);
     }
+
+    public function getReflection() : ReflectionParameter
+    {
+        return $this->reflection;
+    }
 }
