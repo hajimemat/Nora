@@ -5,7 +5,7 @@ use Nora\Framework\DI\Configuration\AbstractConfigurator;
 
 abstract class AbstractKernelConfigurator extends AbstractConfigurator
 {
-    private $meta;
+    protected $meta;
 
     public function __construct(KernelMeta $meta, AbstractConfigurator $configurator = null)
     {

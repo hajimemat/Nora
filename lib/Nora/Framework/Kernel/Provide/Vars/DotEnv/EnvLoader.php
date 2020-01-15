@@ -12,8 +12,13 @@ class EnvLoader
      */
     public function __construct($root)
     {
-        $dotenv = new DotEnv($root, ".env");
-        $dotenv->override();
+        $this->dotenv = new DotEnv($root, ".env");
+    }
+
+    public function override()
+    {
+        $this->dotenv->override();
+        return $this;
     }
 
     public function __invoke()

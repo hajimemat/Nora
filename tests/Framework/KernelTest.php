@@ -50,5 +50,30 @@ class KernelTest extends TestCase
     {
         $v = $kernel->vars;
         $this->assertEquals('some secret dayo', $v->env['SOME_SECRET']);
+        $kernel->cache->set("aaa", "bbb");
+        $this->assertEquals('bbb', $kernel->cache->get('aaa'));
+    }
+
+    /**
+     * @test
+     * @depends カーネルロード
+     */
+    public function カーネルキャッシュ(KernelInterface $kernel)
+    {
+        $kernel->cache->set("aaa", "bbb");
+        $this->assertEquals('bbb', $kernel->cache->get('aaa'));
+    }
+
+    /**
+     * @test
+     * @depends カーネルロード
+     */
+    public function カーネルログ(KernelInterface $kernel)
+    {
+        $kernel->emergency('緊急事態');
+        $kernel->alert('警告');
+        $kernel->critical('致命的エラー');
+        $kernel->error('エラー');
+        $kernel->warning('ワーニング');
     }
 }

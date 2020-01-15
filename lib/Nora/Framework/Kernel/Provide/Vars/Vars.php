@@ -17,11 +17,11 @@ class Vars
      * @Named("server=_SERVER, get=_GET, post=_POST")
      * @Inject
      */
-    public function __construct($server, $get, $post, EnvLoader $env)
+    public function __construct($server, $get, $post, EnvLoader $env = null)
     {
         $this->server = $server;
         $this->get    = $get;
         $this->post   = $post;
-        $this->env    = $env();
+        $this->env    = $env ? $env(): $env;
     }
 }

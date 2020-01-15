@@ -38,7 +38,7 @@ class Container implements ContainerInterface, ArrayAccess, IteratorAggregate
     public function merge(self $container)
     {
         $this->container += $container->getContainer();
-        $this->pointcuts += array_merge($this->pointcuts, $container->getPointcuts());
+        $this->pointcuts = array_merge($this->pointcuts, $container->getPointcuts());
     }
 
     /**

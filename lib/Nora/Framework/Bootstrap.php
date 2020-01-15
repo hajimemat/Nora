@@ -29,17 +29,13 @@ class Bootstrap
         $injector = new KernelInjector($meta);
         $kernelId = $meta->name . ucwords($context) . $cacheNamespace;
 
-        // $cache =
-        // $cache->fetch
         $kernel = $injector->getInstance(KernelInterface::class);
-        // $cache->save
-
         return $kernel;
     }
 
     private function getDirectory(string $name) : string
     {
-        $class = $name . "\\Kernel\\KernelConfigurator";
+        $class = $name . "\\Kernel\\Kernel";
         if (!class_exists($class)) {
             throw new \InvalidArgumentException("Invalid Class ". $class);
         }

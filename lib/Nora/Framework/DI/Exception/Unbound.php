@@ -13,6 +13,13 @@ use LogicException;
 
 class Unbound extends LogicException
 {
+    public function __construct($message, $eno = 0, self $e = null)
+    {
+        if ($e instanceof self) {
+            $message .= "\n - {$e->getMessage()}";
+        }
+        parent::__construct($message, $eno, $e);
+    }
     public function __toString()
     {
         $messages = [sprintf("- %s\n", $this->getMessage())];

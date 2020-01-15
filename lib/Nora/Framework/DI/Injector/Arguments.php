@@ -49,9 +49,6 @@ final class Arguments
             }
             throw new Unbound($argument->getMeta(), 0, $e);
         } catch (Untargeted $e) {
-            if ($argument->isDefaultAvailable()) {
-                return $argument->getDefaultValue();
-            }
             throw new Untargeted($argument->getMeta(), 0, $e);
         }
     }
