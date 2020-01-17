@@ -17,6 +17,11 @@ trait LoggerTrait
         $this->logger = $logger;
     }
 
+    final public function getLogger()
+    {
+        return $this->logger;
+    }
+
     final public function emergency($message, array $context = [])
     {
         $this->logger->emergency($message, $context);

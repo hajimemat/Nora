@@ -70,10 +70,54 @@ class KernelTest extends TestCase
      */
     public function カーネルログ(KernelInterface $kernel)
     {
+        @unlink($kernel->meta->directory.'/var/log/app-test/test.log');
         $kernel->emergency('緊急事態');
         $kernel->alert('警告');
         $kernel->critical('致命的エラー');
         $kernel->error('エラー');
         $kernel->warning('ワーニング');
+        $size = filesize($kernel->meta->directory.'/var/log/app-test/test.log');
+        $this->assertGreaterThan(100, $size);
+    }
+
+    /**
+        $kernel->emergency('緊急事態');
+     * @test
+     * @depends カーネルロード
+     */
+    public function カーネルHttpクライアント(KernelInterface $kernel)
+    {
+        // $status = $kernel
+        //     ->http
+        //     ->get('http://127.0.0.1:9200/_cat/nodes')
+        //     ->withQuery([
+        //         'v' => 'true',
+        //         'pretty' => 'true'
+        //     ]);
+        // $create = $kernel
+        //     ->http
+        //     ->put('http://127.0.0.1:9200/abc')
+        //     ->withHeaders([
+        //         'Content-Type' => 'application/json'
+        //     ]);
+        // $index = $kernel
+        //     ->http
+        //     ->get('http://127.0.0.1:9200/_cat/indices')
+        //     ->withHeaders([
+        //         'Content-Type' => 'application/json'
+        //     ]);
+        //
+        // $this->assertEquals(200, $index->getResponse()->getStatusCode());
+        //
+        // $add = $kernel
+        //     ->http
+        //     ->put('http://127.0.0.1:9200/abc/_doc/1?pretty')
+        //     ->withHeaders([
+        //         'Content-Type' => 'application/json'
+        //     ])
+        //     ->withJson([
+        //         'name' => 'hoge'
+        //     ]);
+        //
     }
 }
